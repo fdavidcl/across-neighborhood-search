@@ -30,3 +30,5 @@
 
 src/cec14/*
 !src/cec14/notice.md
+bin/*
+!bin/.keep
