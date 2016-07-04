@@ -27,3 +27,6 @@
 *.exe
 *.out
 *.app
+
+src/cec13/*
+!src/cec13/notice.md
