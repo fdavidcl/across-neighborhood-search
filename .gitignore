@@ -28,5 +28,5 @@
 *.out
 *.app
 
-src/cec13/*
-!src/cec13/notice.md
+src/cec14/*
+!src/cec14/notice.md
