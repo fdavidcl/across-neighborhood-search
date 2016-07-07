@@ -5,6 +5,7 @@
 #include <random>
 #include <algorithm>
 #include <cmath>
+#include <functional>
 
 double *OShift, *M, *y, *z, *x_bound;
 int ini_flag, n_flag, func_flag, *SS;
@@ -72,12 +73,27 @@ double ANSBase::value_of(solution sol) {
   if (found == value.end()) {
     double f;
     cec14_test_func(sol.data(), &f, dimensionality, 1, num_func);
-    std::cerr << "\e[31mEvaluando: " << f << "\e[m" << std::endl;
+    //std::cerr << "\e[31mEvaluando: " << f << "\e[m" << std::endl;
     value[sol] = f;
     return f;
   } else {
     return (*found).second;
   }
+}
+
+double COAlgorithm::distance(const solution& a, const solution& b) {
+  if (a.size() != b.size())
+    return -1;
+
+  solution difference;
+  std::transform(a.begin(), a.end(), b.begin(),
+                 std::back_inserter(difference), std::minus<double>());
+  double squaresum = std::accumulate(difference.begin(), difference.end(), 0, [](const double& acc, const double& n) { return acc + n * n; });
+  return std::sqrt(squaresum);
+}
+
+void ANSBase::record_diversity(std::vector<solution>& positions) {
+
 }
 
 solution ANSBase::run() {
@@ -94,7 +110,7 @@ solution ANSBase::run() {
   std::normal_distribution<double> gaussian(0.0, gaussian_std);
   std::uniform_int_distribution<int> uniform(0, dimensionality - 2);
 
-  unsigned max_generations = 1000; // this should be a parameter
+  unsigned max_generations = 10000; // this should be a parameter
   for (unsigned generation = 0; generation < max_generations; ++generation) {
     for (unsigned i = 0; i < population_size; ++i) {
       // Randomly selected 'ans_degree' dimensions for individual i
@@ -106,13 +122,13 @@ solution ANSBase::run() {
           if (g_d >= i)
             g_d += 1;
 
-          std::cerr << "\e[33m(g_d = " << g_d << ")\e[32mpositions[" << i << "][" << d << "] = (" << positions[i][d];
+          //std::cerr << "\e[33m(g_d = " << g_d << ")\e[32mpositions[" << i << "][" << d << "] = (" << positions[i][d];
           positions[i][d] = superiors[g_d][d] + gaussian(generator) * std::fabs(superiors[g_d][d] - positions[i][d]);
-          std::cerr << ")" << positions[i][d] << "\e[m" << std::endl;
+          //std::cerr << ")" << positions[i][d] << "\e[m" << std::endl;
         } else {
-          std::cerr << "\e[32mpositions[" << i << "][" << d << "] = (" << positions[i][d];
+          //std::cerr << "\e[32mpositions[" << i << "][" << d << "] = (" << positions[i][d];
           positions[i][d] = superiors[i][d] + gaussian(generator) * std::fabs(superiors[i][d] - positions[i][d]);
-          std::cerr << ")" << positions[i][d] << "\e[m" << std::endl;
+          //std::cerr << ")" << positions[i][d] << "\e[m" << std::endl;
         }
       }
 
@@ -125,7 +141,7 @@ solution ANSBase::run() {
         std::cerr << "better solution: {";
         for (auto& e : best)
           std::cerr << e << ", ";
-        std::cerr << "}" << std::endl;
+        std::cerr << "} with value \e[33m" << (value_of(best) - optimum) << "\e[m" << std::endl;
       }
     }
   }
@@ -136,11 +152,12 @@ solution ANSBase::run() {
 
 int main() {
   //test();
-  ANSBase ans_instance(10, 10, 4, 10, 1, 0.5, -100, 100);
+  // population_size, superior_num, ans_degree, dimensionality, num_func, gaussian_std, range_min, range_max
+  ANSBase ans_instance(10, 10, 4, 10, 3, 0.5, -100, 100);
   solution found = ans_instance.run();
 
   std::cout << "{";
   for (auto& e : found)
     std::cout << e << ", ";
-  std::cout << "}" << std::endl;
+  std::cout << "} with value \e[33m" << ans_instance.value_of(found) << "\e[m" << std::endl;
 }
