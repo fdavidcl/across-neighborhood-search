@@ -1,5 +1,5 @@
 # Define source files and executable objectives
-SOURCES=src/ans.cpp include/cec14_test_func.hxx include/algorithm.hxx
+SOURCES=src/test.cpp src/ans.cpp include/cec14_test_func.hxx include/algorithm.hxx
 EXE=bin/ans
 CXXFLAGS= -std=c++17 -Wall -O3
 INCLUDES=include/
@@ -12,3 +12,8 @@ $(EXE): $(SOURCES)
 
 clean:
 	rm -f $(EXE)
+
+doc: doc/doc.pdf
+
+%.pdf: %.md
+	pandoc $< -o $@ --filter pandoc-citeproc
