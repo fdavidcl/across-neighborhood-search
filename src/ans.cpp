@@ -7,39 +7,6 @@
 #include <cmath>
 #include <functional>
 
-double *OShift, *M, *y, *z, *x_bound;
-int ini_flag, n_flag, func_flag, *SS;
-
-void freespace() {
-  //free(x);
-  //free(f);
-  free(y);
-  free(z);
-  free(M);
-  free(OShift);
-  free(x_bound);
-}
-
-double test() {
-  std::vector<double> x;
-  for (int i = 0; i < 10; i++) {
-    x.push_back(i + i/10.0);
-  }
-
-  int num_func;
-  std::cout << "num_func > ";
-  std::cin >> num_func;
-
-  double f = 0;
-
-  cec14_test_func(x.data(), &f, 10, 1, num_func);
-
-  std::cout << f << std::endl;
-
-  freespace();
-  return f;
-}
-
 std::vector<bool> ANSBase::random_boolean(unsigned size, unsigned truthy) {
   std::vector<bool> values(size, false);
   std::vector<unsigned> unselected(size);
@@ -117,9 +84,11 @@ solution ANSBase::run() {
   // Record the best solution found by the whole population so far
   solution best = *std::max_element(superiors.begin(), superiors.end(), [&](const solution &a, const solution &b) { return value_of(a) < value_of(b); });
 
+  // These distributions will be later used for random number generation
   std::normal_distribution<double> gaussian(0.0, gaussian_std);
   std::uniform_int_distribution<int> uniform(0, population_size - 2);
-  evaluations = 0; // this should be a parameter
+  
+  evaluations = 0;
   while (evaluations < max_evaluations) {
     diversity.push_back(current_diversity(positions));
 
