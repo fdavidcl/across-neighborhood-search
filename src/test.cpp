@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include "ans.cpp"
+#include "ansmemory.cpp"
 
 double *OShift, *M, *y, *z, *x_bound;
 int ini_flag, n_flag, func_flag, *SS;
@@ -36,12 +37,20 @@ double test() {
   return f;
 }*/
 
-int main() {
+int main(int argc, char* argv[]) {
   const double RANGE_MIN = -100, RANGE_MAX = 100, GAUSSIAN_STD = 0.5;
   const std::vector<unsigned> dimensionality = {10, 30};
   //std::map<unsigned, std::vector<std::pair<solution, double>>> results;
 
-  std::fstream results("out/results.log", std::fstream::out);
+  std::string results_filename = "out/results.log";
+  if (argc > 1)
+    results_filename = argv[1];
+  std::string diversity_filename = "out/diversity.log";
+  if (argc > 2)
+    diversity_filename = argv[2];
+
+  std::fstream results(results_filename, std::fstream::out);
+  std::fstream div_file(diversity_filename, std::fstream::out);
 
   results << "10, 30," << std::endl;
   std::cerr << "\e[32m";
@@ -50,7 +59,7 @@ int main() {
 
     for (const auto& d : dimensionality) {
       std::cerr << "with dimensionality " << d << std::endl;
-      ANSBase ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+      ANSMemory ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       solution found = ans_instance.run();
       //results[d].push_back({found, ans_instance.value_of(found)});
 
@@ -59,11 +68,18 @@ int main() {
         std::cerr << e << ", ";
       std::cerr << "} with value" << ans_instance.value_of(found) << std::endl;
       results << ans_instance.value_of(found) << ",";
+
+      div_file << "f" << num_func << "d" << d << " ";
+      for (const auto& datum : ans_instance.get_diversity()) {
+        div_file << datum << " ";
+      }
+      div_file << std::endl;
     }
 
     results << std::endl;
   }
   std::cerr << "\e[m";
+
 
   /*
   for (auto& pair : results) {

@@ -1,3 +1,5 @@
+#ifndef __ALGORITHM
+#define __ALGORITHM
 #include <vector>
 #include <map>
 #include <random>
@@ -12,6 +14,7 @@ public:
 };
 
 class ANSBase : public COAlgorithm {
+protected:
   // Parameters and data necessary for the algorithm
   unsigned population_size,
     superior_num,
@@ -51,4 +54,6 @@ public:
 
   double value_of(solution sol);
   solution run();
+  const std::vector<double>& get_diversity() const { return diversity; }
 };
+#endif

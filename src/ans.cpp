@@ -43,10 +43,13 @@ double ANSBase::value_of(solution sol) {
     } else {
       double f;
       cec14_test_func(sol.data(), &f, dimensionality, 1, num_func);
-      //std::cerr << "\e[31mEvaluando: " << f << "\e[m" << std::endl;
-      value[sol] = f;
+
+      value[sol] = f - optimum;
+      if (f - optimum < 10e-8)
+        value[sol] = 0;
+
       evaluations += 1;
-      return f;
+      return value[sol];
     }
   } else {
     return (*found).second;
@@ -87,10 +90,11 @@ solution ANSBase::run() {
   // These distributions will be later used for random number generation
   std::normal_distribution<double> gaussian(0.0, gaussian_std);
   std::uniform_int_distribution<int> uniform(0, population_size - 2);
-  
+
   evaluations = 0;
-  while (evaluations < max_evaluations) {
-    diversity.push_back(current_diversity(positions));
+  while (evaluations < max_evaluations && value_of(best) > 10e-8) {
+    if (evaluations % 100 == 0)  // record diversity every 100 generations
+      diversity.push_back(current_diversity(positions));
 
     for (unsigned i = 0; i < population_size; ++i) {
       // Randomly selected 'ans_degree' dimensions for individual i
