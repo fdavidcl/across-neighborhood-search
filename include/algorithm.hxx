@@ -5,12 +5,13 @@
 #include <random>
 #include <chrono>
 
-typedef std::vector<double> solution;
+typedef std::vector<double> chromosome;
+typedef std::pair<chromosome, double> solution;
 
 class COAlgorithm {
 public:
   virtual solution run() = 0;
-  double distance(const solution& a, const solution& b);
+  double distance(const chromosome& a, const chromosome& b);
 };
 
 class ANSBase : public COAlgorithm {
@@ -24,7 +25,7 @@ protected:
     evaluations,
     num_func;
   double gaussian_std, range_min, range_max, optimum;
-  std::map<solution, double> value;
+  //std::map<solution, double> value;
 
   std::default_random_engine generator;
 
@@ -34,6 +35,7 @@ protected:
   solution random_solution();
   double current_diversity(std::vector<solution>& positions);
   std::vector<bool> random_boolean(unsigned size, unsigned truthy);
+  solution& best_of(std::vector<solution>& individuals);
 
 public:
   // population_size, superior_num, ans_degree, dimensionality, num_func, gaussian_std, range_min, range_max
@@ -52,7 +54,7 @@ public:
     generator(std::chrono::system_clock::now().time_since_epoch().count())
     {}
 
-  double value_of(solution sol);
+  double value_of(chromosome& sol);
   solution run();
   const std::vector<double>& get_diversity() const { return diversity; }
 };

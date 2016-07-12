@@ -2,7 +2,13 @@
 #include <iostream>
 #include "ans.cpp"
 #include "ansmemory.cpp"
+#include "hybrid_ans.cpp"
+#include "solis.h"
+#include "simplex.h"
+#include "localsearch.h"
+#include "cmaeshan.h"
 
+//These are already declared in lib/localsearch/problemcec2014.cc
 double *OShift, *M, *y, *z, *x_bound;
 int ini_flag, n_flag, func_flag, *SS;
 
@@ -40,8 +46,8 @@ double test() {
 int main(int argc, char* argv[]) {
   const double RANGE_MIN = -100, RANGE_MAX = 100, GAUSSIAN_STD = 0.5;
   const std::vector<unsigned> dimensionality = {10, 30};
-  //std::map<unsigned, std::vector<std::pair<solution, double>>> results;
 
+  // File management
   std::string results_filename = "out/results.log";
   if (argc > 1)
     results_filename = argv[1];
@@ -52,22 +58,22 @@ int main(int argc, char* argv[]) {
   std::fstream results(results_filename, std::fstream::out);
   std::fstream div_file(diversity_filename, std::fstream::out);
 
+  // Initialize a local search object
+  realea::ILocalSearch* ls = new realea::SimplexDim();
+
   results << "10, 30," << std::endl;
-  std::cerr << "\e[32m";
   for (int num_func = 1; num_func <= 30; ++num_func) {
     std::cerr << "Now optimizing function f" << num_func << std::endl;
 
     for (const auto& d : dimensionality) {
       std::cerr << "with dimensionality " << d << std::endl;
-      ANSMemory ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+      HANS ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls);
       solution found = ans_instance.run();
-      //results[d].push_back({found, ans_instance.value_of(found)});
 
       std::cerr << "{";
-      for (auto& e : found)
-        std::cerr << e << ", ";
-      std::cerr << "} with value" << ans_instance.value_of(found) << std::endl;
-      results << ans_instance.value_of(found) << ",";
+      for (auto& e : found.first) std::cerr << e << ", ";
+      std::cerr << "} with value" << found.second << std::endl;
+      results << std::scientific << found.second << ",";
 
       div_file << "f" << num_func << "d" << d << " ";
       for (const auto& datum : ans_instance.get_diversity()) {
@@ -78,17 +84,4 @@ int main(int argc, char* argv[]) {
 
     results << std::endl;
   }
-  std::cerr << "\e[m";
-
-
-  /*
-  for (auto& pair : results) {
-    std::cout << pair.first << " dimensions:" << std::endl;
-
-    for (auto& sol : pair.second) {
-      std::cout << sol.second << ", ";
-    }
-
-    std::
-  }*/
 }
