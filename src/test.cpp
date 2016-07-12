@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include "ans.cpp"
-#include "ansmemory.cpp"
+#include "ans_memory.cpp"
 #include "hybrid_ans.cpp"
 #include "solis.h"
 #include "simplex.h"

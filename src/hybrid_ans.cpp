@@ -1,4 +1,4 @@
-#include "enhancements.hxx"
+#include "hybrid_ans.hxx"
 #include "problemcec2014.h"
 #include "problem.h"
 //#include "solis.h"
@@ -39,6 +39,7 @@ double HANS::optimize(solution& individual, unsigned evals) {
   unsigned real_evals = ls->apply(ls_options, individual.first, individual.second, evals);
   //std::cerr << "Después {"; for (auto& t:copia.first) std::cerr << t << " "; std::cerr << "}\n";
   evaluations += real_evals;
+  evaluations_ls += real_evals;
 
   return individual.second;
 }
@@ -90,6 +91,8 @@ solution HANS::run() {
       }
     }
   }
+
+  std::cerr << "LS used " << evaluations_ls << " evals while ANS used " << evaluations - evaluations_ls << std::endl;
 
   return best;
 }
