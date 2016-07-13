@@ -1,5 +1,5 @@
 # across-neighborhood-search
-An implementation of Across Neighborhood Search
+An implementation of Across Neighborhood Search and variants
 
 ## CEC 2014 functions
 
@@ -9,3 +9,30 @@ The code implementing the test functions has not been included in this repositor
     * `cec14_test_func.hxx`
 * `input_data/`
 * `src/`
+
+
+## Algorithms
+
+The following algorithms are implemented in their own files within the `src/` directory.
+
+### Across Neighborhood Search (ANS)
+
+The original ANS algorithm designed by Guohua Wu:
+
+* Wu, G. (2016). [Across neighborhood search for numerical optimization](https://arxiv.org/pdf/1401.3376.pdf). Information Sciences, 329, 597-618.
+
+### ANS-Memory
+
+This variant adds a memory to each individual that allows it to continue searching within its own neighborhood when improvements are found.
+
+### Hybrid-ANS (HANS)
+
+This variant of ANS attempts to optimize the best global solution found so that individuals can infer characteristics from it later.
+
+#### Local search algorithms
+
+The Simplex, Solis-Wets and CMAES algorithms are implemented inside the `lib/localsearch` directory, from the *realea* library by [@dmolina](https://github.com/dmolina).
+
+## License
+
+This code is licensed under [GPLv3](https://github.com/fdavidcl/across-neighborhood-search/blob/master/LICENSE). [What does this mean?](https://tldrlegal.com/license/gnu-general-public-license-v3-%28gpl-3%29)
