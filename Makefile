@@ -1,5 +1,5 @@
 # Define source files and executable objectives
-SOURCES=src/test.cpp src/ans.cpp include/cec14_test_func.hxx include/algorithm.hxx include/enhancements.hxx src/ansmemory.cpp src/hybrid_ans.cpp
+SOURCES=src/test.cpp src/ans.cpp include/cec14_test_func.hxx include/algorithm.hxx include/ans_memory.hxx src/ans_memory.cpp include/hybrid_ans.hxx src/hybrid_ans.cpp
 EXE=bin/ans
 CXXFLAGS= -std=c++17 -Wall -O3 -g
 INCLUDES=-Iinclude/ -Ilib/localsearch/
