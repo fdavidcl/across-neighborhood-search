@@ -59,7 +59,8 @@ int main(int argc, char* argv[]) {
   std::fstream div_file(diversity_filename, std::fstream::out);
 
   // Initialize a local search object
-  realea::ILocalSearch* ls = new realea::SimplexDim();
+  realea::ILocalSearch* ls = new realea::SolisWets();
+  ((realea::SolisWets*)ls)->setDelta(0.2);
 
   results << "10, 30," << std::endl;
   for (int num_func = 1; num_func <= 30; ++num_func) {
@@ -67,12 +68,14 @@ int main(int argc, char* argv[]) {
 
     for (const auto& d : dimensionality) {
       std::cerr << "with dimensionality " << d << std::endl;
-      HANS ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls);
+      ANSBase ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       solution found = ans_instance.run();
 
       std::cerr << "{";
       for (auto& e : found.first) std::cerr << e << ", ";
-      std::cerr << "} with value" << found.second << std::endl;
+      std::cerr << "} with value " << found.second << "(" <<
+        ans_instance.get_evaluations() << " evaluations - " <<
+        ans_instance.get_generations() << " generations)" << std::endl;
       results << std::scientific << found.second << ",";
 
       div_file << "f" << num_func << "d" << d << " ";

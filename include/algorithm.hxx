@@ -23,6 +23,7 @@ protected:
     dimensionality,
     max_evaluations,
     evaluations,
+    generations,
     num_func;
   double gaussian_std, range_min, range_max, optimum;
   //std::map<solution, double> value;
@@ -57,5 +58,7 @@ public:
   double value_of(chromosome& sol);
   solution run();
   const std::vector<double>& get_diversity() const { return diversity; }
+  unsigned get_generations() { return generations; }
+  unsigned get_evaluations() { return evaluations; }
 };
 #endif
