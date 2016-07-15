@@ -11,11 +11,12 @@ protected:
 
   realea::ProblemCEC2014 cec2014;
   realea::ProblemPtr problem;
-  unsigned evaluations_ls;
+  unsigned evaluations_ls,
+    max_local_ratio;
 
 public:
-  HANS(unsigned m, unsigned c, unsigned n, unsigned d, unsigned f, double sigma, double min, double max, realea::ILocalSearch* ls)
-    :ANSBase(m, c, n, d, f, sigma, min, max), ls(ls), evaluations_ls(0),
+  HANS(unsigned m, unsigned c, unsigned n, unsigned d, unsigned f, double sigma, double min, double max, realea::ILocalSearch* ls, unsigned mlr)
+    :ANSBase(m, c, n, d, f, sigma, min, max), ls(ls), evaluations_ls(0), max_local_ratio(mlr),
     cec2014(d), problem(cec2014.get(f)) {}
 
   solution run();
