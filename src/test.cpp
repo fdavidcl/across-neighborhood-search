@@ -47,20 +47,38 @@ int main(int argc, char* argv[]) {
   const double RANGE_MIN = -100, RANGE_MAX = 100, GAUSSIAN_STD = 0.5;
   const std::vector<unsigned> dimensionality = {10, 30};
 
+  std::string variant = "ans_basic";
+  if (argc < 2) {
+    std::cerr << "No variant of ANS specified, assuming basic ANS." << std::endl;
+  } else {
+    variant = argv[1];
+  }
+
+  assert(variant == "ans_basic" || variant == "ans_memory" || variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw");
+
   // File management
   std::string results_filename = "out/results.log";
-  if (argc > 1)
-    results_filename = argv[1];
-  std::string diversity_filename = "out/diversity.log";
   if (argc > 2)
-    diversity_filename = argv[2];
+    results_filename = argv[2];
+  std::string diversity_filename = "out/diversity.log";
+  if (argc > 3)
+    diversity_filename = argv[3];
 
   std::fstream results(results_filename, std::fstream::out);
   std::fstream div_file(diversity_filename, std::fstream::out);
 
   // Initialize a local search object
-  realea::ILocalSearch* ls = new realea::SolisWets();
-  ((realea::SolisWets*)ls)->setDelta(0.2);
+  realea::ILocalSearch* ls;
+
+  if (variant == "hans_simplex") {
+    ls = new realea::SimplexDim();
+  } else if (variant == "hans_cmaes") {
+    ls = new realea::CMAESHansen("cmaesinit.par");
+    ((realea::CMAESHansen*)ls)->searchRange(0.1);
+  } else if (variant == "hans_sw") {
+    ls = new realea::SolisWets();
+    ((realea::SolisWets*)ls)->setDelta(0.2);
+  }
 
   results << "10, 30," << std::endl;
   for (int num_func = 1; num_func <= 30; ++num_func) {
@@ -68,21 +86,31 @@ int main(int argc, char* argv[]) {
 
     for (const auto& d : dimensionality) {
       std::cerr << "with dimensionality " << d << std::endl;
-      ANSBase ans_instance(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
-      solution found = ans_instance.run();
+
+      ANSBase* ans_instance;
+      if (variant == "ans_basic")
+        ans_instance = new ANSBase(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+      else if (variant == "ans_memory")
+        ans_instance = new ANSMemory(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+      else
+        ans_instance = new HANS(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
+
+      solution found = ans_instance->run();
 
       std::cerr << "{";
       for (auto& e : found.first) std::cerr << e << ", ";
       std::cerr << "} with value " << found.second << "(" <<
-        ans_instance.get_evaluations() << " evaluations - " <<
-        ans_instance.get_generations() << " generations)" << std::endl;
+        ans_instance->get_evaluations() << " evaluations - " <<
+        ans_instance->get_generations() << " generations)" << std::endl;
       results << std::scientific << found.second << ",";
 
       div_file << "f" << num_func << "d" << d << " ";
-      for (const auto& datum : ans_instance.get_diversity()) {
+      for (const auto& datum : ans_instance->get_diversity()) {
         div_file << datum << " ";
       }
       div_file << std::endl;
+
+      delete ans_instance;
     }
 
     results << std::endl;

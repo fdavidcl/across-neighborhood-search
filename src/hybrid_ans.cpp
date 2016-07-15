@@ -60,8 +60,10 @@ solution HANS::run() {
   std::uniform_int_distribution<int> uniform(0, population_size - 2);
 
   evaluations = 0;
+  generations = 0;
   while (evaluations < max_evaluations && best.second > 10e-8) {
-    if (evaluations % 100 == 0)  // record diversity every 100 generations
+    generations += 1;
+    if (generations % 50 == 0)  // record diversity every 100 generations
       diversity.push_back(current_diversity(positions));
 
     for (unsigned i = 0; i < population_size; ++i) {
@@ -82,7 +84,9 @@ solution HANS::run() {
       positions[i].second = value_of(positions[i].first);
 
       if (positions[i].second < best.second) { // positions[i] better than best
-        optimize(positions[i], 1000);
+        if (evaluations < max_local_ratio * max_evaluations)
+          optimize(positions[i], 1000);
+
         best = positions[i];
       }
 
