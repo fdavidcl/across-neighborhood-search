@@ -146,7 +146,7 @@ for (basename in basenames) {
   # diversity plot
   for (f in 1:length(mean_diversity)) {
     png(paste0("stats/out/", basename, "_", names(mean_diversity)[f], ".png"))
-    plot(mean_diversity[[f]], type = "l", xlab = "cientos de generaciones", ylab = "distancia media entre individuos")
+    plot(mean_diversity[[f]], type = "l", xlab = "x50 generaciones", ylab = "distancia media entre individuos")
     dev.off()
   }
 }
