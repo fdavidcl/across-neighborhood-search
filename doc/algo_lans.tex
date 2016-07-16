@@ -1,0 +1,14 @@
+
+\begin{algorithm}
+\caption{\label{algo-lans}Reducción lineal de la población}
+\begin{algorithmic}
+  \STATE{tamaño-siguiente $\gets \frac{2 - p_{ini}}{\text{max-evaluaciones}}\times\text{evaluaciones}+p_{ini}$}
+  \IF{tamaño-siguiente < $p$}
+    \STATE{\textit{población-siguiente} $\gets$ ordenar(\textit{población}, criterio: $f(\textit{población})$)[1 \dots tamaño-siguiente]}
+    \STATE{\textit{superiores-siguiente} $\gets$ ordenar(\textit{superiores}, criterio: $f(\textit{población})$)[1 \dots tamaño-siguiente]}
+    \STATE{$p \gets$ tamaño-siguiente}
+    \STATE{\textit{población} $\gets$ \textit{población-siguiente}}
+    \STATE{\textit{superiores} $\gets$ \textit{superiores-siguiente}}
+  \ENDIF
+\end{algorithmic}
+\end{algorithm}

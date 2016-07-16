@@ -1,0 +1,40 @@
+
+\begin{algorithm}
+\caption{\label{algo-ansm}Algoritmo de la variante ANS-Memory}
+\begin{algorithmic}
+  \STATE{\textbf{Entrada}: $p$ (tamaño población), $a$ (grado-ANS), $\sigma$ (desviación de la gaussiana)}
+  \STATE{Inicializar \textit{población} con $p$ soluciones aleatorias}
+  \STATE{\textit{superiores} $\gets$ \textit{población}}
+  \STATE{\textit{mejor} $\gets \argmax\limits_{x\in\textit{población}}f(x)$}
+  \STATE{{\color{blue}\textit{memoria} $\gets$ [\FALSE, \dots, \FALSE]}}
+  \LOOP
+    \FORALL{$n$ \textbf{in} $\{1,\dots $p$\}$}
+      \IF{{\color{blue}\textit{memoria}[n]}}
+        \STATE{{\color{blue}$N\gets\emptyset$}}
+      \ELSE
+        \STATE{$N\gets$ \{números de 1 a $d$ escogidos con probabilidad $a$\}}
+      \ENDIF
+
+      \FORALL{$i$ \textbf{in} $\{1,\dots d\}$}
+        \IF{$i\in N$}
+          \STATE{g $\gets$ \{número aleatorio de 1 a $p$ distinto de $n$\}}
+          \STATE{$\textit{población}[n]_i=\textit{superiores}[g]_i+N(0,\sigma)\left\lvert \textit{población}[n]_i - \textit{superiores}[g]_i \right\rvert$}
+        \ELSE
+          \STATE{$\textit{población}[n]_i=\textit{superiores}[n]_i+N(0,\sigma)\left\lvert \textit{población}[n]_i - \textit{superiores}[n]_i \right\rvert$}
+        \ENDIF
+      \ENDFOR
+
+      \IF{$f$(\textit{población}[n]) < $f$(\textit{superiores}[n])}
+        \STATE{\textit{superiores}[n] $\gets$ \textit{población}[n]}
+        \STATE{{\color{blue}\textit{memoria}[n] $\gets$ \TRUE}}
+      \ELSE
+        \STATE{{\color{blue}\textit{memoria}[n] $\gets$ \FALSE}}
+      \ENDIF
+      \IF{$f$(\textit{población}[n]) < $f$(\textit{mejor})}
+        \STATE{\textit{mejor} $\gets$ \textit{población}[n]}
+      \ENDIF
+    \ENDFOR
+  \ENDLOOP
+  \RETURN{\textit{mejor}}
+\end{algorithmic}
+\end{algorithm}
