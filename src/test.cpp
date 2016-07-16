@@ -98,18 +98,19 @@ int main(int argc, char* argv[]) {
 
     for (const auto& d : dimensionality) {
       std::cerr << "with dimensionality " << d << std::endl;
+      int n = 10; // d == 10 ? 1 : 28;
 
       ANSBase* ans_instance;
       if (variant == "ans_basic")
-        ans_instance = new ANSBase(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+        ans_instance = new ANSBase(population_size, population_size, n, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else if (variant == "ans_memory")
-        ans_instance = new ANSMemory(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+        ans_instance = new ANSMemory(population_size, population_size, n, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else if (variant == "l_ans")
-        ans_instance = new LANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+        ans_instance = new LANS(population_size, population_size, n, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else if (variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw" )
-        ans_instance = new HANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
+        ans_instance = new HANS(population_size, population_size, n, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
       else
-        ans_instance = new LHANS(100, 100, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
+        ans_instance = new LHANS(100, 100, n, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
 
       solution found = ans_instance->run();
 
