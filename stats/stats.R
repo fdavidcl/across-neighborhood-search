@@ -91,7 +91,8 @@ printbold <-
 ###########################################################################################
 
 TOP <- 25 # should be 25
-basenames <- c("ans_basic", "ans_memory", "hans_simplex", "hans_cmaes", "hans_sw")
+basenames <- c("ans_basic", "ans_memory", "hans_simplex", "hans_cmaes", "hans_sw",
+  "100l_ans", "200l_ans", "l_hans_simplex", "l_hans_cmaes", "l_hans_sw")
 
 d10 <- data.frame()
 d30 <- data.frame()
@@ -144,23 +145,42 @@ for (basename in basenames) {
   }
 
   # diversity plot
-  for (f in 1:length(mean_diversity)) {
-    png(paste0("stats/out/", basename, "_", names(mean_diversity)[f], ".png"))
-    plot(mean_diversity[[f]], type = "l", xlab = "x50 generaciones", ylab = "distancia media entre individuos")
-    dev.off()
-  }
+  # for (f in 1:length(mean_diversity)) {
+  #   png(paste0("stats/out/", basename, "_", names(mean_diversity)[f], ".png"))
+  #   plot(mean_diversity[[f]], type = "l", xlab = "x50 generaciones", ylab = "distancia media entre individuos")
+  #   dev.off()
+  # }
 }
 
+print(friedman.test(as.matrix(d10)))
+print(friedman.test(as.matrix(d30)))
+
+complete10 <- t(cbind(read.csv("stats/conjuntos10.csv", row.names = 1), d10))
+complete30 <- t(cbind(read.csv("stats/conjuntos30.csv", row.names = 1), d30))
+cec10 <- t(cbind(read.csv("stats/cec1410.csv", row.names = 1), d10))
+cec30 <- t(cbind(read.csv("stats/cec1430.csv", row.names = 1), d30))
+
+meanrank <- function(df, r = 1) colMeans(t(apply(df, r, rank)))
+
+d10 <- rbind(d10, rank = meanrank(d10))
+d30 <- rbind(d30, rank = meanrank(d30))
+complete10 <- cbind(complete10, rank = meanrank(complete10, 2))
+complete30 <- cbind(complete30, rank = meanrank(complete30, 2))
+cec10 <- cbind(cec10, rank = meanrank(cec10, 2))
+cec30 <- cbind(cec30, rank = meanrank(cec30, 2))
+
+# Output management
 write.csv(d10, file = "out/d10.csv")
 write.csv(d30, file = "out/d30.csv")
 
 library(xtable)
+library(taRifx)
 sink("doc/d10.tex")
 printbold(xtable(
   d10,
   caption = "Medias de ejecuciones con dimensión 10",
   label = "d10"
-  ), table.placement = "h!", size = "\\small", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  ), table.placement = "h!", size = "\\scriptsize", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
   each = "row", max = FALSE)
 sink(NULL)
 sink("doc/d30.tex")
@@ -168,9 +188,66 @@ printbold(xtable(
   d30,
   caption = "Medias de ejecuciones con dimensión 30",
   label = "d30"
-  ), table.placement = "h!", size = "\\small", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  ), table.placement = "h!", size = "\\scriptsize", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
   each = "row", max = FALSE)
 sink(NULL)
 
+sink("doc/c10.tex")
+printbold(xtable(
+  complete10[,1:16],
+  caption = "Comparaciones con variantes de DE en dimensión 10 (I)",
+  label = "complete10a"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+printbold(xtable(
+  complete10[,17:31],
+  caption = "Comparaciones con variantes de DE en dimensión 10 (II)",
+  label = "complete10b"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+sink(NULL)
+sink("doc/c30.tex")
+printbold(xtable(
+  complete30[,1:16],
+  caption = "Comparaciones con variantes de DE en dimensión 30 (I)",
+  label = "complete30a"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+printbold(xtable(
+  complete30[,17:31],
+  caption = "Comparaciones con variantes de DE en dimensión 30 (II)",
+  label = "complete30b"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+sink(NULL)
+
+sink("doc/cec10.tex")
+printbold(xtable(
+  cec10[,1:16],
+  caption = "Comparaciones con participantes de CEC2014 en dimensión 10 (I)",
+  label = "cec10a"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+printbold(xtable(
+  cec10[,17:31],
+  caption = "Comparaciones con participantes de CEC2014 en dimensión 10 (II)",
+  label = "cec10b"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+sink(NULL)
+sink("doc/cec30.tex")
+printbold(xtable(
+  cec30[,1:16],
+  caption = "Comparaciones con participantes de CEC2014 en dimensión 30 (I)",
+  label = "cec30a"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+printbold(xtable(
+  cec30[,17:31],
+  caption = "Comparaciones con participantes de CEC2014 en dimensión 30 (II)",
+  label = "cec30b"
+  ), table.placement = "h!", size = "\\tiny", sanitize.text.function = function(x) x, sanitize.colnames.function = NULL,
+  each = "column", max = FALSE)
+sink(NULL)
 
 #print(mean_diversity)
