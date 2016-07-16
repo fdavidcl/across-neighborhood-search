@@ -32,3 +32,5 @@ include/cec14_test_func.hxx
 input_data
 bin/*
 !bin/.keep
+!bin/run
+*.pdf
