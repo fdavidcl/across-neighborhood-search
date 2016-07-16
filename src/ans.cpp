@@ -35,31 +35,14 @@ solution ANSBase::random_solution() {
 }
 
 double ANSBase::value_of(chromosome& sol) {
-  double f;
-  cec14_test_func(sol.data(), &f, dimensionality, 1, num_func);
-  evaluations += 1;
-  return f - optimum;
-
-  /*// Hay un problema en el manejo del map value. Da cores al volver de soluciones dadas por la búsqueda local :(
-  std::map<solution, double>::iterator found = value.find(sol);
-
-  if (found == value.end()) {
-    if (evaluations >= max_evaluations) {
-      return std::numeric_limits<double>::infinity();
-    } else {
-      double f;
-      cec14_test_func(sol.data(), &f, dimensionality, 1, num_func);
-
-      value[sol] = f - optimum;
-      if (f - optimum < 10e-8)
-        value[sol] = 0;
-
-      evaluations += 1;
-      return f - optimum;
-    }
+  if (evaluations >= max_evaluations) {
+    return std::numeric_limits<double>::infinity();
   } else {
-    return (*found).second;
-  }*/
+    double f;
+    cec14_test_func(sol.data(), &f, dimensionality, 1, num_func);
+    evaluations += 1;
+    return f - optimum;
+  }
 }
 
 double COAlgorithm::distance(const chromosome& a, const chromosome& b) {

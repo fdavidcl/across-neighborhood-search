@@ -15,7 +15,7 @@ $(EXE): $(SOURCES) $(LS)
 clean:
 	rm -f $(EXE)
 
-doc: doc/doc.pdf
+doc: doc/doc.pdf doc/c10.tex doc/c30.tex doc/d10.tex doc/d30.tex
 
 %.pdf: %.md
 	pandoc $< -o $@ --filter pandoc-citeproc

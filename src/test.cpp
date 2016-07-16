@@ -4,10 +4,12 @@
 #include "ans_memory.cpp"
 #include "hybrid_ans.cpp"
 #include "l_ans.cpp"
+#include "l_hans.cpp"
 #include "solis.h"
 #include "simplex.h"
 #include "localsearch.h"
 #include "cmaeshan.h"
+#include <sstream>
 
 //These are already declared in lib/localsearch/problemcec2014.cc
 double *OShift, *M, *y, *z, *x_bound;
@@ -55,7 +57,9 @@ int main(int argc, char* argv[]) {
     variant = argv[1];
   }
 
-  assert(variant == "ans_basic" || variant == "ans_memory" || variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw" || variant == "l_ans");
+  assert(variant == "ans_basic" || variant == "ans_memory" || variant == "hans_simplex" ||
+    variant == "hans_cmaes" || variant == "hans_sw" || variant == "l_ans" ||
+    variant == "l_hans_cmaes" || variant == "l_hans_sw" || variant == "l_hans_simplex");
 
   // File management
   std::string results_filename = "out/results.log";
@@ -71,12 +75,12 @@ int main(int argc, char* argv[]) {
   // Initialize a local search object
   realea::ILocalSearch* ls;
 
-  if (variant == "hans_simplex") {
+  if (variant == "hans_simplex" || variant == "l_hans_simplex") {
     ls = new realea::SimplexDim();
-  } else if (variant == "hans_cmaes") {
+  } else if (variant == "hans_cmaes" || variant == "l_hans_cmaes") {
     ls = new realea::CMAESHansen("cmaesinit.par");
     ((realea::CMAESHansen*)ls)->searchRange(0.1);
-  } else if (variant == "hans_sw") {
+  } else if (variant == "hans_sw" || variant == "l_hans_sw") {
     ls = new realea::SolisWets();
     ((realea::SolisWets*)ls)->setDelta(0.2);
   }
@@ -102,8 +106,10 @@ int main(int argc, char* argv[]) {
         ans_instance = new ANSMemory(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else if (variant == "l_ans")
         ans_instance = new LANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
-      else
+      else if (variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw" )
         ans_instance = new HANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
+      else
+        ans_instance = new LHANS(100, 100, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
 
       solution found = ans_instance->run();
 
