@@ -95,8 +95,8 @@ Se han realizado algunos experimentos previos al desarrollo de posibles mejoras,
 
 Como resultado, se intuyen los siguientes problemas:
 
-* No tiene buen comportamiento en problemas unimodales: las funciones $f1$, $f2$ y $f3$ del paquete de funciones test tienen un único mínimo, y ANS no es capaz de acercarse.
-* Tiene un problema de convergencia: en algunas funciones la distancia entre los individuos se reduce muy rápidamente, y en otras se mantiene o aumenta con el paso de las generaciones. Este comportamiento se observa en las figuras \ref{div-ans1} y \ref{div-ans2}.
+* No tiene buen comportamiento en problemas unimodales: las funciones $f1$, $f2$ y $f3$ del paquete de funciones test tienen un único mínimo, y ANS no es capaz de acercarse. Los resultados concretos se pueden comprobar en la tablas \ref{d10} y \ref{d30} para dimensiones 10 y 30, respectivamente.
+* Tiene un problema de diversidad: en algunas funciones la distancia entre los individuos se reduce muy rápidamente, y en otras se mantiene o aumenta con el paso de las generaciones. Este comportamiento se observa en las figuras \ref{div-ans1} y \ref{div-ans2}.
 
 \begin{figure}[hbtp]
 \centering
@@ -133,11 +133,11 @@ En la implementación se han utilizado varias técnicas de búsqueda local disti
 
 Como se ha observado en la experimentación, un problema grave de ANS es la inestabilidad de la diversidad de población: según la función a optimizar, ANS puede presentar una convergencia muy fuerte o una total falta de ella. Por esto, podría convenir un ajuste dinámico de algún parámetro que facilite que la diversidad se mantenga alta durante más generaciones al principio, permitiendo que haya convergencia hacia el final de la ejecución.
 
-La opción que se ha explorado es la variación del tamaño de la población con el paso de las generaciones. Puesto que construir un mecanismo de adaptación complejo requeriría un amplio estudio previo acerca del efecto de la alteración del tamaño de la población en el rendimiento de ANS, se ha optado por un decremento lineal tomado del algoritmo L-SHADE [@tanabe2014]. Se trata de un pequeño método que se ejecuta al final de cada generación, se encuentra descrito en el algoritmo \ref{algo-lans}.
+La opción que se ha explorado es la **variación del tamaño de la población** con el paso de las generaciones. Puesto que construir un mecanismo de adaptación complejo requeriría un amplio estudio previo acerca del efecto de la alteración del tamaño de la población en el rendimiento de ANS, se ha optado por un decremento lineal tomado del algoritmo L-SHADE [@tanabe2014]. Se trata de un pequeño método que se ejecuta al final de cada generación, se encuentra descrito en el algoritmo \ref{algo-lans}.
 
 \input{doc/algo_lans.tex}
 
-Este mecanismo se ha añadido tanto al ANS básico como a Hybrid-ANS, con el objetivo de estudiar si las mejoras acumuladas mediante la búsqueda local y la variación de la población tienen un mayor impacto en el rendimiento. Los algoritmos resultantes se han denominado L-ANS y L-HANS, respectivamente.
+Este mecanismo se ha añadido tanto al ANS básico como a Hybrid-ANS, con el objetivo de estudiar si las mejoras acumuladas mediante la búsqueda local y la variación de la población tienen un mayor impacto en el rendimiento. Los algoritmos resultantes se han denominado **L-ANS** y **L-HANS**, respectivamente.
 
 # Experimentación
 
@@ -184,7 +184,7 @@ Son necesarios los intérpretes de los lenguajes Ruby y R, un compilador de C++ 
 \begin{landscape}
   \subsection{Resultados}
 
-  A continuación se muestran los resultados de las ejecuciones realizadas. Se destaca en negrita el mejor resultado para cada función, y la última fila indica el ránking promedio de cada variante. En las últimas dos tablas el ránking medio viene indicado en la última columna.
+  A continuación se muestran los resultados de las ejecuciones realizadas. Se destaca en negrita el mejor resultado para cada función, y la última fila (en las primeras dos tablas) o columna (en las demás) indica el ránking promedio de cada variante. Las tablas \ref{complete10a}, \ref{complete10b}, \ref{complete30a} y \ref{complete30b} comparan las variantes de ANS con técnicas basadas en DE y CMAES, y las \ref{cec10a}, \ref{cec10b}, \ref{cec30a} y \ref{cec30b} las sitúan en la competición CEC2014.
 
   \input{doc/d10.tex}
 
