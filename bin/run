@@ -1,5 +1,32 @@
 #!/usr/bin/env ruby
 
+if ARGV.length == 0
+  puts <<EOF
+
+\e[1mANS run script\e[m
+--------------------------------------------
+\e[1mUsage:\e[m
+  bin/run \e[33m[algorithm-names]\e[m
+
+\e[1mExample:\e[m
+  bin/run ans_basic ans_memory
+
+\e[1mAvailable algorithms:\e[m
+  * ans_basic
+  * ans_memory
+  * hans_simplex
+  * hans_cmaes
+  * hans_sw
+  * l_ans
+  * l_hans_simplex
+  * l_hans_cmaes
+  * l_hans_sw
+--------------------------------------------
+\e[2m(c) David Charte, 2016. Licensed under GPLv3\e[m
+
+EOF
+end
+
 ARGV.each do |name|
   pops = name == "l_ans" ? [100, 200] : [nil]
   pops.each do |p|
