@@ -1,6 +1,10 @@
 # across-neighborhood-search
 An implementation of Across Neighborhood Search and variants
 
+## Usage
+
+Just compile the code and run either `bin/ans` for a single run, or `bin/run` for a complete set of 25 runs. You can later process the results with `stats/stats.R`. Use `make doc` to compile the documentation (only available in Spanish).
+
 ## CEC 2014 functions
 
 The code implementing the test functions has not been included in this repository due to the lack of a free license. However, it can be found at [P. N. Suganthan's public site](http://web.mysites.ntu.edu.sg/epnsugan/PublicSite/Shared%20Documents/CEC-2014/cec14-c-code.zip). Only the `cec14_test_func.cpp` file and the `input_data` directory have been used, in the following structure:
