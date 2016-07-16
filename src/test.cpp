@@ -3,6 +3,7 @@
 #include "ans.cpp"
 #include "ans_memory.cpp"
 #include "hybrid_ans.cpp"
+#include "l_ans.cpp"
 #include "solis.h"
 #include "simplex.h"
 #include "localsearch.h"
@@ -54,7 +55,7 @@ int main(int argc, char* argv[]) {
     variant = argv[1];
   }
 
-  assert(variant == "ans_basic" || variant == "ans_memory" || variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw");
+  assert(variant == "ans_basic" || variant == "ans_memory" || variant == "hans_simplex" || variant == "hans_cmaes" || variant == "hans_sw" || variant == "l_ans");
 
   // File management
   std::string results_filename = "out/results.log";
@@ -80,6 +81,13 @@ int main(int argc, char* argv[]) {
     ((realea::SolisWets*)ls)->setDelta(0.2);
   }
 
+  unsigned population_size = 20;
+  if (argc > 4) {
+    std::stringstream ss;
+    ss << argv[4];
+    ss >> population_size;
+  }
+
   results << "10, 30," << std::endl;
   for (int num_func = 1; num_func <= 30; ++num_func) {
     std::cerr << "Now optimizing function f" << num_func << std::endl;
@@ -89,11 +97,13 @@ int main(int argc, char* argv[]) {
 
       ANSBase* ans_instance;
       if (variant == "ans_basic")
-        ans_instance = new ANSBase(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+        ans_instance = new ANSBase(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else if (variant == "ans_memory")
-        ans_instance = new ANSMemory(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+        ans_instance = new ANSMemory(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
+      else if (variant == "l_ans")
+        ans_instance = new LANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX);
       else
-        ans_instance = new HANS(20, 20, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
+        ans_instance = new HANS(population_size, population_size, 10, d, num_func, GAUSSIAN_STD, RANGE_MIN, RANGE_MAX, ls, 0.4);
 
       solution found = ans_instance->run();
 

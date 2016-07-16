@@ -59,11 +59,11 @@ solution LANS::run() {
 
       // Reorder individuals and keep only the best `next_population_size` ones
       // This is as elegant as it gets (in C++)
-      std::vector<solution> next_positions(next_population_size);
-      std::transform(next_positions.begin(), next_positions.end(), indices.begin(), [&](unsigned i) { return positions[i]; });
+      std::vector<solution> next_positions;
+      std::transform(indices.begin(), indices.begin() + next_population_size, std::back_inserter(next_positions), [&](unsigned i) { return positions[i]; });
 
-      std::vector<solution> next_superiors(next_population_size);
-      std::transform(next_superiors.begin(), next_superiors.end(), indices.begin(), [&](unsigned i) { return superiors[i]; });
+      std::vector<solution> next_superiors;
+      std::transform(indices.begin(), indices.begin() + next_population_size, std::back_inserter(next_superiors), [&](unsigned i) { return superiors[i]; });
 
       // Replace current data with data for next generation
       population_size = next_population_size;
