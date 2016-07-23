@@ -15,9 +15,11 @@ $(EXE): $(SOURCES) $(LS)
 clean:
 	rm -f $(EXE)
 
-doc: doc/doc.pdf doc/c10.tex doc/c30.tex doc/d10.tex doc/d30.tex
+doc: doc/doc.pdf
+pres: doc/pres.md doc/beamer.tex
+	pandoc $< -o doc/pres.pdf -t beamer -s --latex-engine xelatex --template doc/beamer.tex --filter pandoc-citeproc
 
-%.pdf: %.md
+%.pdf: %.md doc/c10.tex doc/c30.tex doc/d10.tex doc/d30.tex
 	pandoc $< -o $@ --filter pandoc-citeproc
 
 %.html: %.md
